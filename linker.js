@@ -5,18 +5,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
-function addLinks(secondChance) {
-    var matchesFound = false;
+function addLinks(attemptNumber) {
+    var maxAttempts = 10,
+        matchesFound = false;
+    attemptNumber = attemptNumber || 1;
+
     getMatchingNodes().each(function(index, node) {
         matchesFound = true;
-        if (!shouldIgnoreNode(node)) {
-            updateNodeContent(node);
-        }
+        updateNodeContent(node);
     });
 
     //  Safety net to deal with slow (but not too slow) page loads
-    if (!matchesFound && typeof secondChance === "undefined") {
-        window.setTimeout(addLinks(true), 5000);
+    if (!matchesFound && attemptNumber < maxAttempts) {
+        window.setTimeout(function() {addLinks(++attemptNumber);}, 2000);
     }
 }
 
@@ -32,7 +33,7 @@ function getMatchingNodes() {
         }
         var matchFound = false;
         $.each(this.childNodes, function(index, node) {
-            if (node.nodeValue && node.nodeValue.search(regex) > -1) {
+            if (node.nodeValue && node.nodeValue.search(regex) > -1 && !shouldIgnoreNode(node)) {
                 matchFound = true;
                 return false;
             }
