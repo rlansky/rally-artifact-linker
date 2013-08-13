@@ -10,7 +10,7 @@ function addLinks(secondChance) {
     getMatchingNodes().each(function(index, node) {
         matchesFound = true;
         if (!shouldIgnoreNode(node)) {
-            updateContentWithLink(node);
+            updateNodeContent(node);
         }
     });
     if (!matchesFound && typeof secondChance === "undefined") {
@@ -24,27 +24,41 @@ function getMatchingNodes() {
                        "TABLE", "TBODY", "TR",  "INPUT", "BUTTON", "IFRAME", "FORM"],
         regex = getRegExp();
 
+    //  Will find matches even if there are multiple child nodes in a node
     return $("*").filter(function() {
-        return  ignoredTags.indexOf(this.tagName) === -1 &&
-            this.childNodes &&
-            this.childNodes[0] &&
-            this.childNodes[0].nodeValue &&
-            this.childNodes[0].nodeValue.search(regex) > -1;
+        if (ignoredTags.indexOf(this.tagName) > -1 || !this.childNodes || this.childNodes.length < 1) {
+            return false;
+        }
+        var matchFound = false;
+        $.each(this.childNodes, function(index, node) {
+            if (node.nodeValue && node.nodeValue.search(regex) > -1) {
+                matchFound = true;
+                return false;
+            }
+        });
+        return matchFound;
     });
 }
 
 function getRegExp() {
-    return /(US|DE|F|TA)(\d+)/i ;
+    return /(US|DE|TA|TS|DS|F|P|T|I)(\d+)/i;
+}
+
+function getRegExpGlobal() {
+    return new RegExp(getRegExp().source, 'ig');
 }
 
 //  Need to ignore certain nodes (those that are already links or never should be links)
 function shouldIgnoreNode(node) {
-    var levelsToCheck = 4,
+    var levelsToCheck = 5,
         currentNode = node;
     for (var index = 0; index < levelsToCheck; index++) {
         if (!currentNode) {
             return false;
-        } else if(currentNode.tagName === 'A' || (currentNode.className && currentNode.className.indexOf('action-header') > -1)) {
+        } else if (currentNode.tagName === 'A' ||
+                   (currentNode.className &&
+                       (currentNode.className.indexOf('action-header') > -1 ||
+                        currentNode.className.indexOf('rally-editable') > -1))) {
             return true;
         }
         currentNode = currentNode.parentNode;
@@ -53,30 +67,43 @@ function shouldIgnoreNode(node) {
     return false;
 }
 
-function updateContentWithLink(node) {
+function updateNodeContent(node) {
     var clone = node.cloneNode(),
-        content = node.childNodes[0].nodeValue,
-        regex = getRegExp(),
-        match = content.match(regex)[0],
-        matchLoc = content.indexOf(match),
-        textNode;
+        regex = getRegExp();
 
-    //  If there is content before the link, add it
-    if (matchLoc > 0) {
-        textNode = document.createTextNode(content.slice(0, matchLoc));
-        clone.appendChild(textNode);
-    }
-
-    //  Add the link
-    clone.appendChild(getLinkNode(match));
-
-    //  If there is content after the link, add it
-    if (matchLoc + match.length < content.length - 1) {
-        textNode = document.createTextNode(content.slice(matchLoc + match.length));
-        clone.appendChild(textNode);
-    }
+    //  Loop through each node... add those that don't have a match, update those that do.
+    $.each(node.childNodes, function(index, childNode) {
+        if (childNode && childNode.nodeValue && childNode.nodeValue.search(regex) > -1 && !shouldIgnoreNode(childNode)) {
+            createLinkedContent(clone, childNode.nodeValue);
+        } else {
+            clone.appendChild(childNode.cloneNode(true));
+        }
+    });
 
     node.parentNode.replaceChild(clone, node);
+}
+
+function createLinkedContent(clone, content) {
+    var regex = getRegExpGlobal(),
+        previousMatchIndex = 0,
+        match, matchStart;
+
+    while ((match = regex.exec(content)) !== null) {
+        //  Pick up text prior to the last match (if any)
+        matchStart = regex.lastIndex - match[0].length;
+        if (previousMatchIndex < matchStart) {
+            clone.appendChild(document.createTextNode(content.slice(previousMatchIndex, matchStart)));
+        }
+
+        //  Pick up the match itself and keep track of this last index
+        clone.appendChild(getLinkNode(match[0]));
+        previousMatchIndex = regex.lastIndex;
+    }
+
+    //  Pick up trailing text (if any)
+    if (previousMatchIndex < content.length) {
+        clone.appendChild(document.createTextNode(content.slice(previousMatchIndex)));
+    }
 }
 
 //  Returns the node that is a link
