@@ -13,8 +13,9 @@ function addLinks(secondChance) {
             updateNodeContent(node);
         }
     });
+
+    //  Safety net to deal with slow (but not too slow) page loads
     if (!matchesFound && typeof secondChance === "undefined") {
-        //  We'll call this again to make sure they page has *really* been loaded
         window.setTimeout(addLinks(true), 5000);
     }
 }
@@ -41,7 +42,7 @@ function getMatchingNodes() {
 }
 
 function getRegExp() {
-    return /(US|DE|TA|TS|DS|F|P|T|I)(\d+)/i;
+    return /(US|DE|TA|TC|DS|F|P|T|I)(\d+)/i;
 }
 
 function getRegExpGlobal() {
@@ -56,6 +57,7 @@ function shouldIgnoreNode(node) {
         if (!currentNode) {
             return false;
         } else if (currentNode.tagName === 'A' ||
+                   (currentNode.id && currentNode.id === 'devFooter') ||
                    (currentNode.className &&
                        (currentNode.className.indexOf('action-header') > -1 ||
                         currentNode.className.indexOf('rally-editable') > -1))) {

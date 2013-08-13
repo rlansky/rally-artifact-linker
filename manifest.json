@@ -2,8 +2,8 @@
   "manifest_version": 2,
 
   "name": "Artifact Linker",
-  "description": "This extension updates text in Rally pages that appear to refer to Rally artifacts so that the text becomes links to the artifacts if they are not already links.",
-  "version": "1.0",
+  "description": "Updates text in Rally pages that appear to refer to Rally artifacts so that the text becomes links to the artifacts if they are not already links.",
+  "version": "0.1",
 
   "permissions": [
     "tabs"
