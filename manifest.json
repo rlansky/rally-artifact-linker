@@ -3,7 +3,7 @@
 
   "name": "Artifact Linker",
   "description": "Updates text in Rally pages that appear to refer to Rally artifacts so that the text becomes links to the artifacts if they are not already links.",
-  "version": "0.1",
+  "version": "0.3",
 
   "permissions": [
     "tabs"

@@ -43,7 +43,7 @@ function getMatchingNodes() {
 }
 
 function getRegExp() {
-    return /(US|DE|TA|TC|DS|F|P|T|I)(\d+)/i;
+    return /(\s+?|^)(US|DE|TA|TC|DS|F|P|T|I)(\d+)/i;
 }
 
 function getRegExpGlobal() {
@@ -89,23 +89,24 @@ function updateNodeContent(node) {
 function createLinkedContent(clone, content) {
     var regex = getRegExpGlobal(),
         previousMatchIndex = 0,
-        match, matchStart;
+        match, matchStart, trimmedMatch;
 
     while ((match = regex.exec(content)) !== null) {
         //  Pick up text prior to the last match (if any)
-        matchStart = regex.lastIndex - match[0].length;
+        trimmedMatch = $.trim(match[0]);
+        matchStart = regex.lastIndex - trimmedMatch.length;
         if (previousMatchIndex < matchStart) {
-            clone.appendChild(document.createTextNode(content.slice(previousMatchIndex, matchStart)));
+            clone.appendChild(getTextNode(content.slice(previousMatchIndex, matchStart)));
         }
 
         //  Pick up the match itself and keep track of this last index
-        clone.appendChild(getLinkNode(match[0]));
+        clone.appendChild(getLinkNode($.trim(match[0])));
         previousMatchIndex = regex.lastIndex;
     }
 
     //  Pick up trailing text (if any)
     if (previousMatchIndex < content.length) {
-        clone.appendChild(document.createTextNode(content.slice(previousMatchIndex)));
+        clone.appendChild(getTextNode(content.slice(previousMatchIndex)));
     }
 }
 
@@ -121,4 +122,8 @@ function getLinkNode(content) {
             content + '</a>';
 
     return $(linkContent)[0];
+}
+
+function getTextNode(text) {
+    return document.createTextNode(text);
 }
