@@ -1,9 +1,9 @@
 {
     "manifest_version": 2,
 
-    "name": "Artifact Linker",
+    "name": "Rally Artifact Linker",
     "description": "Updates text in Rally pages that appear to refer to Rally artifacts so that the text becomes links to the artifacts if they are not already links.",
-    "version": "0.3",
+    "version": "0.4",
 
     "options_page": "options.html",
 
@@ -14,7 +14,7 @@
     "content_scripts": [
     {
         "matches": ["https://*.rallydev.com/*", "http://localhost:7001/*"],
-        "js": ["linker.js", "jquery.js", "storage.js"]
+        "js": ["linker.js", "jquery.js"]
     }
     ],
 

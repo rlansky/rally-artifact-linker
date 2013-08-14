@@ -1,5 +1,12 @@
+//  Need to initialize the regular expression from the preferences
+var ralRegex = null;
+chrome.runtime.sendMessage({method: "getPrefixes"}, function(response) {
+   ralRegex = response.prefixes;
+});
+
+
 //  Listen for the background job to tell us that we need to do something
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function(request) {
     if (request.tabUpdated === true) {
         window.setTimeout(addLinks, 1000);
     }
@@ -43,7 +50,7 @@ function getMatchingNodes() {
 }
 
 function getRegExp() {
-    return new RegExp('(\\s+?|^)(' + getStoredPrefixes().join('|') + ')(\\d+)', 'i');
+    return new RegExp('(\\s+?|^)(' + ralRegex.join('|') + ')(\\d+)', 'i');
 }
 
 function getRegExpGlobal() {
@@ -110,7 +117,6 @@ function createLinkedContent(clone, content) {
     }
 }
 
-//  Returns the node that is a link
 function getLinkNode(content) {
     //  Dear lord this sucks... but if I try to setup a function to be called with the onClick event, I
     //  lose context (the context is the event, not the Rally page). So, I'm going with this abomination
