@@ -1,23 +1,25 @@
 {
-  "manifest_version": 2,
+    "manifest_version": 2,
 
-  "name": "Artifact Linker",
-  "description": "Updates text in Rally pages that appear to refer to Rally artifacts so that the text becomes links to the artifacts if they are not already links.",
-  "version": "0.3",
+    "name": "Artifact Linker",
+    "description": "Updates text in Rally pages that appear to refer to Rally artifacts so that the text becomes links to the artifacts if they are not already links.",
+    "version": "0.3",
 
-  "permissions": [
-    "tabs"
-  ],
+    "options_page": "options.html",
 
-  "content_scripts": [
+    "permissions": [
+        "tabs"
+    ],
+
+    "content_scripts": [
     {
-      "matches": ["https://*.rallydev.com/*", "http://localhost:7001/*"],
-      "js": ["linker.js", "jquery.js"]
+        "matches": ["https://*.rallydev.com/*", "http://localhost:7001/*"],
+        "js": ["linker.js", "jquery.js", "storage.js"]
     }
-  ],
+    ],
 
-  "background": {
+    "background": {
     "scripts": ["background.js"],
     "persistent": false
-  }
+}
 }

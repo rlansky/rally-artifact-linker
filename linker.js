@@ -43,7 +43,7 @@ function getMatchingNodes() {
 }
 
 function getRegExp() {
-    return /(\s+?|^)(US|DE|TA|TC|DS|F|P|T|I)(\d+)/i;
+    return new RegExp('(\\s+?|^)(' + getStoredPrefixes().join('|') + ')(\\d+)', 'i');
 }
 
 function getRegExpGlobal() {
