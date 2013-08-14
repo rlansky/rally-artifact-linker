@@ -12,8 +12,15 @@ chrome.runtime.onMessage.addListener(function(request) {
     }
 });
 
+//  Listen for the injected script to publish an event
+window.addEventListener("message", function(event) {
+    if (event.source === window && event.data && event.data.updated) {
+        addLinks(2);
+    }
+}, false);
+
 function addLinks(attemptNumber) {
-    var maxAttempts = 10,
+    var maxAttempts = 2,
         matchesFound = false;
     attemptNumber = attemptNumber || 1;
 
@@ -133,3 +140,35 @@ function getLinkNode(content) {
 function getTextNode(text) {
     return document.createTextNode(text);
 }
+
+//  Need to listen for certain Rally published events so that we get more clues on when to update,
+//  this script will get injected into the page to handle that
+(function() {
+    var hackityHack = function() {
+        var Ext = window.Ext4;
+
+        Ext.define('Rally.plugin.artifactLinker', {
+            mixins: {
+                messageable: 'Rally.Messageable'
+            },
+
+            constructor: function(config) {
+                this.subscribe('aftercontentrender', this._triggerUpdate, this);
+                this.subscribe('rallycardboard-ready', this._triggerUpdate, this);
+                this.subscribe('gridloaded', this._triggerUpdate, this);
+                this.subscribe('rallydiscussionpopover-ready', this._triggerUpdate, this);
+                this.callParent(arguments);
+            },
+
+            _triggerUpdate: function() {
+                window.postMessage({updated: true}, '*');
+            }
+        });
+
+        window.setTimeout(function() {Ext.create('Rally.plugin.artifactLinker')}, 2000);
+    };
+
+    var script = document.createElement('script');
+    script.appendChild(document.createTextNode('('+ hackityHack +')();'));
+    (document.body || document.head || document.documentElement).appendChild(script);
+})();

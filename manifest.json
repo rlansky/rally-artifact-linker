@@ -4,6 +4,11 @@
     "name": "Rally Artifact Linker",
     "description": "Updates text in Rally pages that appear to refer to Rally artifacts so that the text becomes links to the artifacts if they are not already links.",
     "version": "0.4",
+    "minimum_chrome_version": "22",
+
+    "icons": {
+        "128": "icon_128.png"
+    },
 
     "options_page": "options.html",
 
@@ -11,12 +16,10 @@
         "tabs"
     ],
 
-    "content_scripts": [
-    {
+    "content_scripts": [{
         "matches": ["https://*.rallydev.com/*", "http://localhost:7001/*"],
         "js": ["linker.js", "jquery.js"]
-    }
-    ],
+    }],
 
     "background": {
     "scripts": ["background.js"],
