@@ -40,11 +40,7 @@ function getMatchingNodes() {
 }
 
 function getRegExp() {
-    return new RegExp('(\\s+?|^)(' + ralRegex.join('|') + ')(\\d+)', 'i');
-}
-
-function getRegExpGlobal() {
-    return new RegExp(getRegExp().source, 'ig');
+    return new RegExp('(\\s+?|^)(' + ralRegex.join('|') + ')(\\d+)', 'ig');
 }
 
 //  Need to ignore certain nodes (those that are already links or never should be links)
@@ -90,7 +86,7 @@ function updateNodeContent(node) {
 }
 
 function createLinkedContent(clone, content) {
-    var regex = getRegExpGlobal(),
+    var regex = getRegExp(),
         previousMatchIndex = 0,
         match, matchStart, trimmedMatch;
 
