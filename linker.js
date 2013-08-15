@@ -5,34 +5,17 @@ chrome.runtime.sendMessage({method: "getPrefixes"}, function(response) {
 });
 
 
-//  Listen for the background job to tell us that we need to do something
-chrome.runtime.onMessage.addListener(function(request) {
-    if (request.tabUpdated === true) {
-        window.setTimeout(addLinks, 1000);
-    }
-});
-
 //  Listen for the injected script to publish an event
 window.addEventListener("message", function(event) {
     if (event.source === window && event.data && event.data.updated && !shouldIgnorePage(event)) {
-        addLinks(2);
+        addLinks();
     }
 }, false);
 
-function addLinks(attemptNumber) {
-    var maxAttempts = 2,
-        matchesFound = false;
-    attemptNumber = attemptNumber || 1;
-
+function addLinks() {
     getMatchingNodes().each(function(index, node) {
-        matchesFound = true;
         updateNodeContent(node);
     });
-
-    //  Safety net to deal with slow (but not too slow) page loads
-    if (!matchesFound && attemptNumber < maxAttempts) {
-        window.setTimeout(function() {addLinks(++attemptNumber);}, 2000);
-    }
 }
 
 function getMatchingNodes() {

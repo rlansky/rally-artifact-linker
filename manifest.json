@@ -12,10 +12,6 @@
 
     "options_page": "options.html",
 
-    "permissions": [
-        "tabs"
-    ],
-
     "content_scripts": [{
         "matches": ["https://*.rallydev.com/*", "http://localhost:7001/*"],
         "js": ["linker.js", "jquery.js"]
