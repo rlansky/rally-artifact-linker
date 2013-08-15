@@ -118,7 +118,7 @@ function trim(str) {
 
 //  Defines the list of characters (aside from white space) that we allow to occur before a matching prefix
 function getTrimChars() {
-    return ['(', ':', ',', '-'];
+    return ['(', ':', ',', '-', '[', '#'];
 }
 
 function getLinkNode(content) {
