@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
 
-    "name": "Rally Artifact Linker",
-    "description": "Updates text in Rally pages that appear to refer to Rally artifacts so that the text becomes links to the artifacts if they are not already links.",
+    "name": "Rally - Artifact Linker",
+    "description": "Updates text in Rally pages that appears to refer to Rally artifacts so that the text becomes links to the artifacts if they are not already links.",
     "version": "0.4",
     "minimum_chrome_version": "22",
 
