@@ -133,7 +133,7 @@ function getTextNode(text) {
 //  Need to listen for certain Rally published events so that we get more clues on when to update,
 //  this script will get injected into the page to handle that
 (function() {
-    var hackityHack = function() {
+    var injectedScript = function() {
         var Ext = window.Ext4;
 
         Ext.define('Rally.plugin.artifactLinker', {
@@ -146,6 +146,7 @@ function getTextNode(text) {
                 this.subscribe('rallycardboard-ready', this._triggerUpdate, this);
                 this.subscribe('gridloaded', this._triggerUpdate, this);
                 this.subscribe('rallydiscussionpopover-ready', this._triggerUpdate, this);
+                this.subscribe('contentupdated', this._triggerUpdate, this);
                 this.callParent(arguments);
             },
 
@@ -158,6 +159,6 @@ function getTextNode(text) {
     };
 
     var script = document.createElement('script');
-    script.appendChild(document.createTextNode('('+ hackityHack +')();'));
+    script.appendChild(document.createTextNode('('+ injectedScript +')();'));
     (document.body || document.head || document.documentElement).appendChild(script);
 })();
