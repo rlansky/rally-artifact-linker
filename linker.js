@@ -14,7 +14,7 @@ chrome.runtime.onMessage.addListener(function(request) {
 
 //  Listen for the injected script to publish an event
 window.addEventListener("message", function(event) {
-    if (event.source === window && event.data && event.data.updated) {
+    if (event.source === window && event.data && event.data.updated && !shouldIgnorePage(event)) {
         addLinks(2);
     }
 }, false);
@@ -82,6 +82,12 @@ function shouldIgnoreNode(node) {
     }
 
     return false;
+}
+
+//  Need to ignore certain pages
+function shouldIgnorePage(event) {
+    var href = event.target.location.href;
+    return href.indexOf('edit.sp') > -1 || href.indexOf('new.sp') > -1 || href.indexOf('copy.sp') > -1;
 }
 
 function updateNodeContent(node) {
