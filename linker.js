@@ -40,7 +40,7 @@ function getMatchingNodes() {
 }
 
 function getRegExp() {
-    return new RegExp('(\\s+?|^)(' + ralRegex.join('|') + ')(\\d+)', 'ig');
+    return new RegExp('([\\s\\' + getTrimChars().join('\\') + ']+?|^)(' + ralRegex.join('|') + ')(\\d+)', 'ig');
 }
 
 //  Need to ignore certain nodes (those that are already links or never should be links)
@@ -92,14 +92,14 @@ function createLinkedContent(clone, content) {
 
     while ((match = regex.exec(content)) !== null) {
         //  Pick up text prior to the last match (if any)
-        trimmedMatch = $.trim(match[0]);
+        trimmedMatch = trim(match[0]);
         matchStart = regex.lastIndex - trimmedMatch.length;
         if (previousMatchIndex < matchStart) {
             clone.appendChild(getTextNode(content.slice(previousMatchIndex, matchStart)));
         }
 
         //  Pick up the match itself and keep track of this last index
-        clone.appendChild(getLinkNode($.trim(match[0])));
+        clone.appendChild(getLinkNode(trimmedMatch));
         previousMatchIndex = regex.lastIndex;
     }
 
@@ -109,11 +109,23 @@ function createLinkedContent(clone, content) {
     }
 }
 
+function trim(str) {
+    var result = $.trim(str),
+        regex = new RegExp('^[\\' + getTrimChars().join('\\') + ']+', 'gi');
+
+    return result.replace(regex, '');
+}
+
+//  Defines the list of characters (aside from white space) that we allow to occur before a matching prefix
+function getTrimChars() {
+    return ['(', ':', ',', '-'];
+}
+
 function getLinkNode(content) {
     //  Dear lord this sucks... but if I try to setup a function to be called with the onClick event, I
     //  lose context (the context is the event, not the Rally page). So, I'm going with this abomination
     //  since it's all I can get working at this point.
-    var linkContent = '<a href="javascript:void(0);" onClick="' +
+    var linkContent = '<a href="javascript:void(0);" style="font-weight: bold; color: deeppink; font-size: 120%;" onClick="' +
             'searcher = Ext4.create(\'Rally.alm.search.HeaderSearchToolbar\');' +
             'searcher._onAfterContentUpdated = function(){this.destroy();};' +
             'searcher.formattedIdSearchEngine.search(\'' + content + '\');">' +
