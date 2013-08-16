@@ -15,6 +15,10 @@
                 this.subscribe('gridloaded', this._triggerUpdate, this);
                 this.subscribe('rallydiscussionpopover-ready', this._triggerUpdate, this);
                 this.subscribe('contentupdated', this._triggerUpdate, this);
+                this.subscribe('rallydetaildiscussionfield-ready', this._triggerUpdate, this);
+                this.subscribe('rallydetailtagsmetafield-ready', this._triggerUpdate, this);
+                this.subscribe('rallydetailattachmentsmetafield-ready', this._triggerUpdate, this);
+                this.subscribe('rallydiscussionrichtextstreamview-ready', this._triggerUpdate, this);
                 this.callParent(arguments);
             },
 

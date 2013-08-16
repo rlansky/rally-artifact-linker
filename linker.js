@@ -13,7 +13,7 @@ window.addEventListener("message", function(event) {
         if (lastScheduledEvent !== null) {
             clearTimeout(lastScheduledEvent);
         }
-        lastScheduledEvent = setTimeout(addLinks, 300);
+        lastScheduledEvent = setTimeout(addLinks, 500);
     }
 }, false);
 
