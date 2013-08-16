@@ -131,7 +131,7 @@ function getLinkNode(content) {
     //  Dear lord this sucks... but if I try to setup a function to be called with the onClick event, I
     //  lose context (the context is the event, not the Rally page). So, I'm going with this abomination
     //  since it's all I can get working at this point.
-    var linkContent = '<a href="javascript:void(0);" style="font-weight: bold; color: deeppink; font-size: 120%;" onClick="' +
+    var linkContent = '<a href="javascript:void(0);" onClick="' +
             'searcher = Ext4.create(\'Rally.alm.search.HeaderSearchToolbar\');' +
             'searcher._onAfterContentUpdated = function(){this.destroy();};' +
             'searcher.formattedIdSearchEngine.search(\'' + content + '\');">' +
