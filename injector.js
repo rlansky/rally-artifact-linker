@@ -4,6 +4,7 @@
     var injectedScript = function() {
         var Ext = window.Ext4;
 
+        //  This code is used to add the event listener and bubble those events up to the window
         Ext.define('Rally.plugin.artifactLinker', {
             mixins: {
                 messageable: 'Rally.Messageable'
@@ -27,19 +28,28 @@
             }
         });
 
-        function injectListener() {
+        function injectRallyArtifactListener() {
             try {
                 Ext.create('Rally.plugin.artifactLinker');
             } catch(e) {
                 //  Try again in a bit in case the needed Ext components are not on the page yet
-                window.setTimeout(injectListener, 2000);
+                window.setTimeout(injectRallyArtifactListener, 2000);
             }
         }
-
-        injectListener();
+        injectRallyArtifactListener();
     };
+
+    //  This code is what gets called when they click on a link that we have created
+    injectedFunction = 'function rallyArtifactLinkClick(linkedText) {' +
+        'var searcher = Ext4.create(\'Rally.alm.search.HeaderSearchToolbar\');' +
+        'searcher._onAfterContentUpdated = function() {' +
+            'this.destroy();' +
+        '};' +
+        'searcher.formattedIdSearchEngine.search(linkedText);' +
+    '}';
 
     var script = document.createElement('script');
     script.appendChild(document.createTextNode('('+ injectedScript +')();'));
+    script.appendChild(document.createTextNode(injectedFunction));
     (document.body || document.head || document.documentElement).appendChild(script);
 })();

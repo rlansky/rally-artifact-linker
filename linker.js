@@ -128,16 +128,7 @@ function getTrimChars() {
 }
 
 function getLinkNode(content) {
-    //  Dear lord this sucks... but if I try to setup a function to be called with the onClick event, I
-    //  lose context (the context is the event, not the Rally page). So, I'm going with this abomination
-    //  since it's all I can get working at this point.
-    var linkContent = '<a href="javascript:void(0);" onClick="' +
-            'searcher = Ext4.create(\'Rally.alm.search.HeaderSearchToolbar\');' +
-            'searcher._onAfterContentUpdated = function(){this.destroy();};' +
-            'searcher.formattedIdSearchEngine.search(\'' + content + '\');">' +
-            content + '</a>';
-
-    return $(linkContent)[0];
+    return $('<a href="javascript:void(0);" onClick="rallyArtifactLinkClick(\'' + content + '\');">' + content + '</a>')[0];
 }
 
 function getTextNode(text) {
