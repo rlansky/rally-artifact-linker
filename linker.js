@@ -1,5 +1,6 @@
 //  Need to initialize the regular expression from the preferences
-var ralRegex = null;
+var ralRegex = null,
+    lastScheduledEvent = null;
 chrome.runtime.sendMessage({method: "getPrefixes"}, function(response) {
    ralRegex = response.prefixes;
 });
@@ -8,11 +9,16 @@ chrome.runtime.sendMessage({method: "getPrefixes"}, function(response) {
 //  Listen for the injected script to publish an event
 window.addEventListener("message", function(event) {
     if (event.source === window && event.data && event.data.updated && !shouldIgnorePage(event)) {
-        addLinks();
+        //  Make sure our event runs last and don't allow them to pile up
+        if (lastScheduledEvent !== null) {
+            clearTimeout(lastScheduledEvent);
+        }
+        lastScheduledEvent = setTimeout(addLinks, 300);
     }
 }, false);
 
 function addLinks() {
+    lastScheduledEvent = null;
     getMatchingNodes().each(function(index, node) {
         updateNodeContent(node);
     });
