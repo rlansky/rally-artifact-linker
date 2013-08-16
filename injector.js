@@ -20,6 +20,7 @@
                 this.subscribe('rallydetailtagsmetafield-ready', this._triggerUpdate, this);
                 this.subscribe('rallydetailattachmentsmetafield-ready', this._triggerUpdate, this);
                 this.subscribe('rallydiscussionrichtextstreamview-ready', this._triggerUpdate, this);
+                this.subscribe('rallydescriptionpopover-ready', this._triggerUpdate, this);
                 this.callParent(arguments);
             },
 
